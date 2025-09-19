@@ -1,34 +1,61 @@
 import React from 'react'
-import { FiPlus, FiUser, FiSearch, FiInstagram, FiFacebook } from 'react-icons/fi';
-import { Link } from 'react-router-dom'
+import './CSS/Footer.css'
+import { FaInstagram, FaFacebookF, FaTwitter, FaYoutube, FaLinkedinIn } from "react-icons/fa";
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className='footer'>
-      <div className='footer-flex'>
-        <div className='footer-link-flex'>
-          <Link to='/about' className='footer-link'>About us</Link>
-          <Link to='/contactus' className='footer-link'>Contact us</Link>
-          <Link to='/howtouse' className='footer-link'>How to shop</Link>
-          <Link to='/terms' className='footer-link'>Terms of use</Link>
-          <Link to='/privacy' className='footer-link'>Privacy policy</Link>
+    <div className='footer-container'>
+      <div className='footer-top'>
+
+        <div className='footer1'>
+          <h4> <span style={{color: '#2e7d32'}}>Unilag</span> Yard</h4>
+          <h2>The Official Marketplace <br />for UNILAG Students</h2>
+          <h2>A safe, secure platform for <br />students to buy and sell</h2>
         </div>
-        <div >
-          <h3 className='footer-link'>Contact information</h3>
-          <p className='footer-link'>Email: Http......</p>
-          <p className='footer-link'>Whatsapp: Http......</p>
+
+        <div className='footer2'>
+            <h3>Quick Links</h3>
+            <Link to='home' className='footer-link'>Home</Link>
+            <Link to='/addProduct' className='footer-link'>Add Product</Link>
+            <Link to='/HowItWorks' className='footer-link'>How it works</Link>
+            <Link to='contactUs' className='footer-link'>Contact Us</Link>
+            <Link to='/aboutUs' className='footer-link'>About Us</Link>
         </div>
-        <div>
-          <a href='https://instagram.com' target='_blank' rel='noopener noreferrer' className='socials'>
-            <FiInstagram size={20} /> Instagram link...
-          </a>
-          <a href='https://facebook.com' target='_blank' rel='noopener noreferrer' className='socials'>
-            <FiFacebook size={20} /> Facebook link...
-          </a>
+
+        <div className='footer2'>
+          <h3>HELP & SUPPORT</h3>
+          <Link to='/sfateyTips' className='footer-link'>Safety Tips</Link>
+          <Link to='/faqs' className='footer-link'>FAQs</Link>
+          <Link to='/TOS' className='footer-link'>Terms of Service</Link>
+          <Link to='/privacyPolicy' className='footer-link'>Privacy Policy</Link>
+        </div>
+
+        <div className='footer2'>
+          <h3>STAY CONNECTED</h3>
+          <div className="social-icons">
+            <a href="https://facebook.com/yourpage" aria-label="Facebook">
+              <FaFacebookF size={32} className="social-icon" />
+            </a>
+            <a href="https://twitter.com/yourhandle" aria-label="Twitter">
+              <FaTwitter size={32} className="social-icon" />
+            </a>
+            <a href="https://instagram.com/yourhandle" aria-label="Instagram">
+              <FaInstagram size={32} className="social-icon" />
+            </a>
+            <a href="https://youtube.com/yourchannel" aria-label="YouTube">
+              <FaYoutube size={32} className="social-icon" />
+            </a>
+            <a href="https://linkedin.com/company/yourpage" aria-label="LinkedIn">
+              <FaLinkedinIn size={32} className="social-icon" />
+            </a>
+          </div>
         </div>
       </div>
-      <h3 className='right'>© 2025 Unilag Yard. All rights reserved.</h3>
-    </footer>
+      <div className='footer-bottom'>
+        <h5>Copyright © 2025 Unilag Yard. All rights reserved. For UNILAG Students, by UNILAG Students</h5>
+      </div>
+    </div>
   )
 }
 

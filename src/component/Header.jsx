@@ -1,112 +1,94 @@
-import React, { useState } from "react";
+import React from 'react'
 import { Link } from "react-router-dom";
 import "./CSS/Header.css";
-import profileIcon from "../media/download.png";
-import { CgProfile } from "react-icons/cg";
+import { Heart, MessageCircle, ClipboardList, Bell, User, Search, PlusCircle } from "lucide-react";
 
 const Header = ({ user = null, logout = () => {} }) => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // Debugging - log the user object
-  console.log("Header user object:", user);
-
-  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
-  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
-
-  // Robust name extraction
-  const getUserName = () => {
-    if (!user) {
-      console.warn("No user object available");
-      return "User";
-    }
-
-    // Check all possible name sources
-    const nameSource = user.displayName || user.name || user.email;
-    
-    if (!nameSource) {
-      console.warn("User object exists but no name fields found:", user);
-      return "User";
-    }
-
-    // Handle email case
-    if (nameSource.includes("@")) {
-      return nameSource.split("@")[0];
-    }
-
-    // Return first name if available
-    return nameSource.split(" ")[0] || nameSource;
-  };
-
   return (
-    <header className="header-div">
-      <Link className="logo" to="/home">UNILAG Yard</Link>
-
-      <div className="burger" onClick={toggleMobileMenu}>
-        &#9776;
-      </div>
-
-      <div className="logo-right">
-        <div className="logo-btn-flex">
-          <img
-            src={CgProfile} alt="profile" className="google-img"
-            style={{ borderRadius: "50%", width: "40px", height: "40px" }}
-          />
-          <Link to="/addProduct" className="logo-btn">AddProduct</Link>
+    <header className='header-d'>
+        <div className="logo-section">
+          <Link to="/home" className='logo'>
+            <span className='logo-text1'>Unilag</span> Yard
+            </Link> {/* Added to prop */}
         </div>
-        <Link to="/allProduct" className="logo-btn-flex logo-btn">AllProduct</Link>
-        {user ? (
-          <div className="logo-btn-flex" onClick={toggleDropdown}>
-            <img
-              src={user?.photoURL || profileIcon}
-              alt="profile"
-              className="google-img"
-              style={{ borderRadius: "50%", width: "40px", height: "40px" }}
+        
+        <div className="search-section">
+          <form className="search-bar" role="search">
+            {/* Input field */}
+            <input 
+              type="text" 
+              placeholder="Search for books, gadgets, items..." 
+              aria-label="Search products"
             />
-            <span className="logo-btn">Hi, {getUserName()}</span>
-            {dropdownOpen && (
-              <div className="dropdown-menu">
-                <h6>Profile</h6>
-                <h6>Settings</h6>
-                <h6 onClick={logout}>Logout</h6>
-              </div>
-            )}
-          </div>
-        ) : (
-          <>
-            <Link className="logo-btn-flex" to="/login">
-              <span className="logo-btn">Login</span>
-            </Link>
-            <Link className="logo-btn-flex1" to="/signup">
-              <span className="logo-btn">Sign Up</span>
-            </Link>
-          </>
-        )}
-      </div>
-
-      {mobileMenuOpen && (
-        <div className="dropdown-menu2" onMouseLeave={toggleMobileMenu}>
-          {user ? (
-            <>
-              <h6>Profile</h6>
-              <h6>Settings</h6>
-              <h6 onClick={() => { logout(); setMobileMenuOpen(false); }}>Logout</h6>
-            </>
-          ) : (
-            <>
-              <h6><Link to="/login" onClick={() => setMobileMenuOpen(false)}>Login</Link></h6>
-              <h6><Link to="/signup" onClick={() => setMobileMenuOpen(false)}>Sign Up</Link></h6>
-            </>
-          )}
+            {/* Search icon - placed after the input but inside the same form */}
+            <Search size={20} className="search-icon" />
+          </form>
         </div>
-      )}
+        
+        <div className="nav-icons">
+          <Heart size={24} color="#4e5d6c" className="icon-hover heart-icon" />      
+          <MessageCircle size={24} color="#4e5d6c" className="icon-hover message-icon" /> 
+          <ClipboardList size={24} color="#4e5d6c" className="icon-hover advert-icon" /> 
+          <Bell size={24} color="#4e5d6c" className="icon-hover bell-icon" />       
+          <User size={24} color="#4e5d6c" className="icon-hover profile-icon" />
+          <button className='product-btn'>
+            <Link to="/addProduct" className='product-btn'>
+              <PlusCircle size={20} className="btn-icon" /> {/* Adjusted size */}
+              <span>Add Product</span>
+            </Link>
+          </button>
+        </div>
     </header>
-  );
-};
+  )
+}
 
 Header.defaultProps = {
   user: null,
   logout: () => {}
 };
 
-export default Header;
+export default Header
+
+
+
+// import React from 'react'
+// import { Link } from "react-router-dom";
+// import "./CSS/Header.css";
+// import { Heart, MessageCircle, ClipboardList, Bell, User, Search, PlusCircle } from "lucide-react";
+
+
+// const Header = ({ user = null, logout = () => {} }) => {
+
+//   return (
+//     <header className='header-div'>
+//       <div>
+//         <div><Link className='logo'>Unilag Yard</Link></div>
+//         <div>
+//           <form class="search-bar" role="search">
+//             <input type="text" placeholder="Search for books, gadgets, items..." 
+//             < Search size={24} color="#4e5d6c" className="icon-hover" /> />
+//             <button type="submit" aria-label="Submit search"></button>
+//           </form>
+//         </div>
+//         <div>
+//           <Heart size={24} color="#4e5d6c" className="icon-hover" />      
+//           <MessageCircle size={24} color="#4e5d6c" className="icon-hover" /> 
+//           <ClipboardList size={24} color="#4e5d6c" className="icon-hover" /> 
+//           <Bell size={24} color="#4e5d6c" className="icon-hover" />       
+//           <User size={24} color="#4e5d6c" className="icon-hover" />
+//           <button className='product-btn'>
+//             <PlusCircle size={24} color="#4e5d6c" className="icon-hover" />
+//             Add Product
+//           </button>
+//         </div>
+//       </div>
+//     </header>
+//   )
+// }
+
+// Header.defaultProps = {
+//   user: null,
+//   logout: () => {}
+// };
+
+// export default Header

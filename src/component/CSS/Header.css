@@ -1,180 +1,145 @@
 /* Base Styles */
-.header-div {
+.header-d {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background-color: #fff;
+  padding: 12px 35px;
+  background-color: #ffffff;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  box-sizing: border-box;
   z-index: 100;
 }
 
-.logo {
-  font-size: 1.5rem;
+.logo-text1{
+  color: #2e7d32;
+}
+.logo{
+  font-family: 'Poppins', sans-serif;
   font-weight: 700;
-  color: #333;
-  text-decoration: none;
-  flex-shrink: 0;
+  font-size: 32px;
 }
-
-/* Navigation Elements */
-.logo-right {
+.search-bar {
+  position: relative; /* This is the key! It creates a positioning context for the icon */
   display: flex;
-  align-items: center;
-  gap: 1.5rem;
+  width: 100%;
+  max-width: 600px;
+  flex-grow: 1;
+  margin: 0 30px; 
 }
 
-.logo-btn-flex,
-.logo-btn-flex1 {
+.search-bar input {
+  width: 100%;
+  padding: 0.6rem 4rem 0.6rem 1rem; /* Large left padding to make space for the icon */
+  border: 1px solid #dfe3e8;
+  border-radius: 50px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #565D6D;
+  box-sizing: border-box;
+}
+
+.search-icon {
+  position: absolute; /* Takes the icon out of the normal flow */
+  right: 0.75rem; /* Positions it from the left inside the .search-bar container */
+  top: 50%; /* Positions it halfway down the container */
+  transform: translateY(-50%); /* Nudges it up by half its height to center it perfectly */
+  color: #565D6D;
+  pointer-events: none; /* This is important! It lets clicks pass through to the input underneath */
+}
+
+.search-bar input:focus {
+  outline: none;
+  border-color: #2e7d32 ; /* Changes border to green on focus */
+}
+
+.nav-icons{
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 0.5rem;
-  text-decoration: none;
-  position: relative;
-  transition: all 0.3s ease;
+  gap: 20px;
 }
 
-.logo-btn {
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
+.heart-icon {
+  color: red;       /* This changes the outline color to red */
+  fill: red !important;         /* This fills the inside of the heart */
+  cursor: pointer;
+}
+
+.message-icon {
+  color: #4e5d6c; /* Outline */
+  fill: #ffffff;   /* Inside */
+}
+
+.advert-icon {
+  color: #8B4513; /* Brown Outline */
+  fill: #00000023;   /* Black for the inner lines */
+}
+
+.bell-icon {
+  color: #4e5d6c; /* Grey Outline */
+  fill: #FFD700;   /* Yellow Fill */
+}
+
+.profile-icon {
+  color: #4e5d6c; /* Dark Grey Outline */
+  fill: #dfe3e8 ;   /* Dark Grey Fill (makes it solid) */
+}
+
+.product-btn{
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  background-color: #2e7d32;
+  color: #ffffff;
+  padding: 5px;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.product-btn:hover {
+  background-color: #388e3c; /* Lighter green on hover */
+  transform: translateY(-1px); /* Slight lift effect */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Subtle shadow on hover */
+}
+
+.product-btn:hover .icon-hover {
+  color: #ffffff !important;
+}
+
+/* Login/Sign Up Button Styles */
+.sign-btn {
+  border-radius: 50px; /* Rounded edges to match your design style */
+  border: 2px solid #2e7d32; /* Thicker border for better definition */
+  background-color: #ffffff;
+  color: #2e7d32;
+  font-family: 'Roboto', sans-serif;
   font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-/* Logged-in User Specific */
-.google-img {
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  object-fit: cover;
-  border: 2px solid #f0f0f0;
-  transition: transform 0.3s ease;
-}
-
-.logo-btn-flex:hover .google-img {
-  transform: scale(1.05);
-}
-
-/* Dropdown Menus */
-.dropdown-menu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  padding: 0.5rem 0;
-  min-width: 180px;
-  opacity: 0;
-  transform: translateY(-10px);
-  visibility: hidden;
-  transition: all 0.3s ease;
-}
-
-.dropdown-menu h6 {
-  padding: 0.75rem 1.5rem;
-  margin: 0;
+  font-size: 16px; /* Slightly smaller for better proportion */
+  padding: 10px 20px; /* More horizontal padding */
+  text-decoration: none; /* Remove underline from link */
+  display: inline-block;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease-in-out; /* Smooth transition for hover effects */
 }
 
-
-
-.dropdown-menu h6:hover {
-  background: #f8f8f8;
+.sign-btn:hover {
+  background-color: #2e7d32; /* Green background on hover */
+  color: #ffffff; /* White text on hover */
+  transform: translateY(-1px); /* Slight lift effect */
+  box-shadow: 0 4px 8px rgba(46, 125, 50, 0.2); /* Subtle green shadow */
 }
 
-.logo-btn-flex:hover .dropdown-menu {
-  opacity: 1;
-  transform: translateY(0);
-  visibility: visible;
-}
-
-/* Mobile Menu */
-.burger {
-  display: none;
-  cursor: pointer;
-  font-size: 1.5rem;
-}
-
-.dropdown-menu2 {
-  position: fixed;
-  top: 70px;
-  left: 0;
-  right: 0;
-  background: white;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  padding: 1rem;
-  display: none;
-  flex-direction: column;
-  gap: 1rem;
-  z-index: 99;
-}
-
-.dropdown-menu2 h6 {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #eee;
-}
-
-/* Product Links */
-.nav-product-link {
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-}
-
-.nav-product-link:hover {
-  background: #f5f5f5;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .header-div {
-    padding: 1rem;
-  }
-
-  .burger {
-    display: block;
-  }
-
-  .logo-right > .logo-btn-flex:not(:last-child),
-  .logo-right > .logo-btn-flex1 {
-    display: none;
-  }
-
-  .dropdown-menu2 {
-    display: flex;
-  }
-
-  .dropdown-menu {
-    right: 1rem;
-  }
-}
-
-@media (min-width: 769px) {
-  .dropdown-menu2 {
-    display: none !important;
-  }
-}
-
-/* Animation Enhancements */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.dropdown-menu {
-  animation: fadeIn 0.3s ease forwards;
-}
-
-/* Button States */
-.logo-btn-flex:hover,
-.logo-btn-flex1:hover {
-  transform: translateY(-2px);
-}
-
-.logo-btn-flex:active,
-.logo-btn-flex1:active {
-  transform: translateY(0);
+.sign-btn:active {
+  transform: translateY(0); /* Remove lift when clicked */
+  box-shadow: 0 2px 4px rgba(46, 125, 50, 0.2); /* Smaller shadow when clicked */
 }

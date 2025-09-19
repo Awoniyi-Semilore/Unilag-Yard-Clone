@@ -1,37 +1,35 @@
-import React, { useState } from "react";
+import React from 'react'
 import { Link } from "react-router-dom";
 import "./CSS/Header.css";
+import { Heart, MessageCircle, ClipboardList, Bell, User, Search, PlusCircle } from "lucide-react";
 
-const GuestHeader = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
-
+const GuestHeader = ({ user = null, logout = () => {} }) => {
   return (
-    <header className="header-div">
-      <Link className="logo" to="/guest-home">UNILAG Yard</Link>
-
-      <div className="burger" onClick={toggleMobileMenu}>
-        &#9776;
-      </div>
-
-      <div className="logo-right">
-        <Link className="logo-btn-flex" to="/login">
-          <span className="logo-btn">Login</span>
-        </Link>
-        <Link className="logo-btn-flex1" to="/signup">
-          <span className="logo-btn">Sign Up</span>
-        </Link>
-      </div>
-
-      {mobileMenuOpen && (
-        <div className="dropdown-menu2" onMouseLeave={toggleMobileMenu}>
-          <h6><Link to="/login" onClick={() => setMobileMenuOpen(false)}>Login</Link></h6>
-          <h6><Link to="/signup" onClick={() => setMobileMenuOpen(false)}>Sign Up</Link></h6>
+    <header className='header-d'>
+        <div className="logo-section">
+          <Link to="/home" className='logo'>
+            <span className='logo-text1'>Unilag</span> Yard
+            </Link> {/* Added to prop */}
         </div>
-      )}
+        
+        <div className="search-section">
+          <form className="search-bar" role="search">
+            {/* Input field */}
+            <input 
+              type="text" 
+              placeholder="Search for books, gadgets, items..." 
+              aria-label="Search products"
+            />
+            {/* Search icon - placed after the input but inside the same form */}
+            <Search size={20} className="search-icon" />
+          </form>
+        </div>
+        
+        <div >
+          <Link to="/signUp" className='sign-btn'>Login / Sign Up</Link>
+        </div>
     </header>
-  );
-};
+  )
+}
 
 export default GuestHeader;
