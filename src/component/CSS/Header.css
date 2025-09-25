@@ -5,7 +5,7 @@
   align-items: center;
   padding: 12px 35px;
   background-color: #ffffff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   position: fixed;
   top: 0;
   left: 0;
@@ -454,4 +454,114 @@
   .search-icon{
     gap: 1.2rem;
   }
+}
+
+.homeCard {
+    background: white;
+    border-radius: 12px;
+    padding: 15px; /* Reduced padding */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin: 10px; /* Added margin */
+    max-width: 300px; /* Limit card width */
+}
+
+.homeCard img {
+    width: 100%;
+    height: 160px; /* Reduced image height */
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.safety-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #2e7d32, #4caf50);
+    padding: 15px;
+    border-radius: 10px;
+    color: white;
+}
+
+.safety-icon {
+    color: white;
+}
+
+.safety-highlight {
+    background: #e8f5e9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 4px solid #2e7d32;
+}
+
+.tip-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 12px 0;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.tip-icon {
+    color: #2e7d32;
+}
+
+.safety-btn {
+    width: 100%;
+    padding: 12px;
+    background: #2e7d32;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.homeLeft, .homeRight {
+    position: sticky;
+    top: 120px; /* Below header */
+    height: fit-content;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.category-wrapper {
+    position: relative;
+}
+
+.subcategories-dropdown {
+    position: absolute;
+    left: 100%;
+    top: 0;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px;
+    min-width: 200px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.subcategory-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin: 2px 0;
+}
+
+.subcategory-item:hover {
+    background: #f0f0f0;
+}
+
+.homeLeft, .homeRight {
+    position: sticky;
+    top: 120px;
+    height: fit-content;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
 }
