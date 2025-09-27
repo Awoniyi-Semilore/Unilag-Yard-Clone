@@ -17,6 +17,8 @@ const Home = () => {
   const [allProducts, setAllProducts] = useState([]);
   const [displayMode, setDisplayMode] = useState('featured');
   const [loading, setLoading] = useState(true);
+  const [showMobileCategories, setShowMobileCategories] = useState(false);
+  const [expandedCategory, setExpandedCategory] = useState(null);
   const categoriesRef = useRef(null);
 
   // Sample subcategories data
@@ -89,45 +91,33 @@ const Home = () => {
     setSelectedSubcategory(subcategory);
     setDisplayMode('products');
     
-    // Use setTimeout to ensure state is updated before making the API call
-    setTimeout(async () => {
-      try {
-        let products;
-        if (subcategory === "Featured") {
-          console.log('🎯 [DEBUG] Fetching featured products');
-          products = await getProducts({ featured: true });
-        } else {
-          console.log('🎯 [DEBUG] Fetching filtered products:', {
-            category: selectedCategory,
-            subcategory: subcategory
-          });
-          
-          products = await getProducts({ 
-            category: selectedCategory, 
-            subcategory: subcategory 
-          });
-          
-          console.log('🎯 [DEBUG] Filtered products found:', products.length);
-          if (products.length > 0) {
-            console.log('🎯 [DEBUG] Product details:', products.map(p => ({
-              title: p.title,
-              category: p.category,
-              subcategory: p.subcategory
-            })));
-          }
-        }
+    try {
+      let products;
+      if (subcategory === "Featured") {
+        console.log('🎯 [DEBUG] Fetching featured products');
+        products = await getProducts({ featured: true });
+      } else {
+        console.log('🎯 [DEBUG] Fetching filtered products:', {
+          category: selectedCategory,
+          subcategory: subcategory
+        });
         
-        setFilteredProducts(products);
-      } catch (error) {
-        console.error('Error filtering products:', error);
-        // Fallback to client-side filtering
-        const filtered = allProducts.filter(product => 
-          product.subcategory === subcategory
-        );
-        console.log('🎯 [DEBUG] Fallback filtering found:', filtered.length, 'products');
-        setFilteredProducts(filtered);
+        products = await getProducts({ 
+          category: selectedCategory, 
+          subcategory: subcategory 
+        });
+        
+        console.log('🎯 [DEBUG] Filtered products found:', products.length);
       }
-    }, 50);
+      
+      setFilteredProducts(products);
+    } catch (error) {
+      console.error('Error filtering products:', error);
+      const filtered = allProducts.filter(product => 
+        product.subcategory === subcategory
+      );
+      setFilteredProducts(filtered);
+    }
   };
 
   const handleShowFeatured = async () => {
@@ -140,53 +130,43 @@ const Home = () => {
   };
 
   const closeSubcategories = () => {
-    console.log('❌ [DEBUG] Closing subcategories');
     setSelectedCategory(null);
     setDisplayMode('featured');
     handleShowFeatured();
   };
 
-  // Close subcategories when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (categoriesRef.current && !categoriesRef.current.contains(event.target)) {
-        setSelectedCategory(null);
-        if (displayMode === 'subcategories') {
-          setDisplayMode('featured');
-          handleShowFeatured();
-        }
-      }
-    };
+  // Mobile categories functions
+  const openMobileCategories = () => {
+    setShowMobileCategories(true);
+  };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [displayMode]);
+  const closeMobileCategories = () => {
+    setShowMobileCategories(false);
+    setExpandedCategory(null);
+  };
+
+  const handleMobileCategoryClick = (categoryName) => {
+    setExpandedCategory(expandedCategory === categoryName ? null : categoryName);
+  };
+
+  const handleMobileSubcategoryClick = (subcategory) => {
+    // Find the category for this subcategory
+    const category = Object.keys(subcategories).find(cat => 
+      subcategories[cat].includes(subcategory)
+    );
+    setSelectedCategory(category);
+    handleSubcategoryClick(subcategory);
+    closeMobileCategories();
+  };
+
+  const handleMobileFeaturedClick = () => {
+    handleShowFeatured();
+    closeMobileCategories();
+  };
 
   return (
     <div className='home'>
-      {/* Debug Test Button */}
-      <div style={{
-        position: 'fixed', 
-        top: '10px', 
-        right: '10px', 
-        background: '#2e7d32', 
-        color: 'white', 
-        padding: '10px',
-        borderRadius: '5px',
-        zIndex: 1000,
-        fontSize: '12px'
-      }}>
-        <button onClick={() => {
-          console.log('🧪 [TEST] Manual filter test');
-          setSelectedCategory('Electronics & Gadgets');
-          setTimeout(() => {
-            handleSubcategoryClick('Laptops & Computers');
-          }, 100);
-        }} style={{background: 'none', border: 'none', color: 'white', cursor: 'pointer'}}>
-          🧪 TEST FILTER
-        </button>
-      </div>
-
+      
       {/* Top Section */}
       <div className='homeTop'>
         <div className='homeTopLeft'>
@@ -204,9 +184,64 @@ const Home = () => {
         </div>
       </div>
 
+      {/* Mobile Categories Button */}
+      <button 
+        className="mobile-categories-btn"
+        onClick={openMobileCategories}
+      >
+        <Settings size={20} />
+        Browse Categories
+      </button>
+
+      {/* Mobile Categories Backdrop */}
+      <div className={`categories-backdrop ${showMobileCategories ? 'active' : ''}`} 
+           onClick={closeMobileCategories}>
+        <div className={`categories-panel ${showMobileCategories ? 'active' : ''}`} 
+             onClick={(e) => e.stopPropagation()}>
+          <button className="close-panel" onClick={closeMobileCategories}>×</button>
+          <h4>Browse Categories</h4>
+          
+          <div className="mobile-categories">
+            <div className="mobile-category featured" onClick={handleMobileFeaturedClick}>
+              <Flame size={20} color="#ff6b35" />
+              <span>Featured Products</span>
+            </div>
+            
+            {Object.keys(subcategories).map((categoryName) => (
+              <div key={categoryName}>
+                <div 
+                  className="mobile-category"
+                  onClick={() => handleMobileCategoryClick(categoryName)}
+                >
+                  {categoryIcons[categoryName]}
+                  <span>{categoryName}</span>
+                  <ChevronRight 
+                    size={16} 
+                    className={expandedCategory === categoryName ? 'rotated' : ''} 
+                  />
+                </div>
+                
+                <div className={`mobile-subcategories ${expandedCategory === categoryName ? 'active' : ''}`}>
+                  {subcategories[categoryName].map((subcat) => (
+                    <div 
+                      key={subcat}
+                      className="mobile-subcategory"
+                      onClick={() => handleMobileSubcategoryClick(subcat)}
+                    >
+                      {subcat}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+
       {/* Bottom Section */}
       <div className='homeBottom'>
-        {/* Left Sidebar - Categories */}
+        {/* Left Sidebar - Categories (Desktop) */}
         <div className='homeLeft' ref={categoriesRef}>
           <h4>Browse Categories</h4>
           <div className='homeCategories'>
@@ -226,7 +261,6 @@ const Home = () => {
                 <div 
                   className='homeCategory'
                   onClick={() => handleCategoryClick(categoryName)}
-                  style={{cursor: 'pointer'}}
                 >
                   {categoryIcons[categoryName]}
                   <h3>{categoryName}</h3>
@@ -248,17 +282,15 @@ const Home = () => {
           ) : (
             <>
               {displayMode === 'featured' && (
-                <>
-                  <div className="section-header">
-                    <div className="header-content">
-                      <Flame size={24} color="#ff6b35" />
-                      <div>
-                        <h5>Featured Listings 🔥</h5>
-                        <p>Promoted items with maximum visibility</p>
-                      </div>
+                <div className="section-header">
+                  <div className="header-content">
+                    <Flame size={24} color="#ff6b35" />
+                    <div>
+                      <h5>Featured Listings 🔥</h5>
+                      <p>Promoted items with maximum visibility</p>
                     </div>
                   </div>
-                </>
+                </div>
               )}
 
               {displayMode === 'subcategories' && selectedCategory && (
@@ -283,12 +315,7 @@ const Home = () => {
                       <div 
                         key={subcat} 
                         className="subcategory-card"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          console.log('🖱️ [DEBUG] Subcategory card clicked:', subcat);
-                          handleSubcategoryClick(subcat);
-                        }}
-                        style={{cursor: 'pointer'}}
+                        onClick={() => handleSubcategoryClick(subcat)}
                       >
                         <span>{subcat}</span>
                         <ChevronRight size={16} color="#666" />
@@ -299,19 +326,17 @@ const Home = () => {
               )}
 
               {displayMode === 'products' && (
-                <>
-                  <div className="section-header">
-                    <div className="products-header">
-                      <div className="header-content">
-                        <h5>Showing: {selectedSubcategory}</h5>
-                        <p>{filteredProducts.length} products found in {selectedCategory}</p>
-                      </div>
-                      <button className="back-button" onClick={handleShowFeatured}>
-                        ← Back to Featured
-                      </button>
+                <div className="section-header">
+                  <div className="products-header">
+                    <div className="header-content">
+                      <h5>Showing: {selectedSubcategory}</h5>
+                      <p>{filteredProducts.length} products found in {selectedCategory}</p>
                     </div>
+                    <button className="back-button" onClick={handleShowFeatured}>
+                      ← Back to Featured
+                    </button>
                   </div>
-                </>
+                </div>
               )}
 
               {/* Products Grid */}
@@ -370,7 +395,7 @@ const Home = () => {
                         <Flame size={48} color="#ccc" />
                         <h3>No products found in this category</h3>
                         <p>Try browsing different categories or check back later</p>
-                        <button className="safety-btn" onClick={handleShowFeatured} style={{marginTop: '16px'}}>
+                        <button className="safety-btn" onClick={handleShowFeatured}>
                           Show Featured Products
                         </button>
                       </div>
@@ -400,7 +425,7 @@ const Home = () => {
                 <CheckCircle size={20} />
                 <span>100% Verified UNILAG Students Only</span>
               </div>
-              <p>Every user is campus-verified for your safety</p>
+              <p>Every seller is campus-verified for your safety</p>
             </div>
 
             <div className="safety-tips">
@@ -411,7 +436,7 @@ const Home = () => {
                 </div>
                 <div className="tip-content">
                   <strong>Meet in Public Campus Spots</strong>
-                  <p>Library, Faculty buildings, Student Union</p>
+                  <p>Library, Faculty buildings, faculty quadrangles</p>
                 </div>
               </div>
               
