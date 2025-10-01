@@ -11,13 +11,36 @@ const ProductDetail = () => {
     const [error, setError] = useState('');
     const [selectedImage, setSelectedImage] = useState(0);
 
-    // Sample images array - replace with your actual image data from Firestore
-    const productImages = [
-        product?.imageUrl || '/default-image.jpg',
-        '/image2.jpg', // You'll replace these with actual image URLs from your product data
-        '/image3.jpg',
-        '/image4.jpg'
-    ];
+    // Get actual product images from Firestore data
+    const productImages = product?.imageUrls || 
+                         (product?.imageUrl ? [product.imageUrl] : ['/default-image.jpg']);
+
+    // Navigation functions
+    const nextImage = () => {
+        setSelectedImage((prev) => 
+            prev === productImages.length - 1 ? 0 : prev + 1
+        );
+    };
+
+    const prevImage = () => {
+        setSelectedImage((prev) => 
+            prev === 0 ? productImages.length - 1 : prev - 1
+        );
+    };
+
+    // Keyboard navigation
+    useEffect(() => {
+        const handleKeyPress = (e) => {
+            if (e.key === 'ArrowLeft') {
+                prevImage();
+            } else if (e.key === 'ArrowRight') {
+                nextImage();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyPress);
+        return () => window.removeEventListener('keydown', handleKeyPress);
+    }, [productImages.length]);
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -29,14 +52,14 @@ const ProductDetail = () => {
                 if (docSnap.exists()) {
                     const productData = { id: docSnap.id, ...docSnap.data() };
                     setProduct(productData);
-                    // If you have multiple images in your product data, set them here
-                    // setProductImages(productData.images || [productData.imageUrl]);
+                    console.log('✅ Product loaded:', productData);
                 } else {
                     setError('Product not found');
+                    console.log('❌ Product not found:', productId);
                 }
             } catch (err) {
-                setError('Failed to load product');
-                console.error(err);
+                console.error('❌ Error loading product:', err);
+                setError('Failed to load product from database');
             } finally {
                 setLoading(false);
             }
@@ -44,12 +67,52 @@ const ProductDetail = () => {
 
         if (productId) {
             fetchProduct();
+        } else {
+            setError('No product ID provided');
+            setLoading(false);
         }
     }, [productId]);
 
-    if (loading) return <div className="loading">Loading product details...</div>;
-    if (error) return <div className="error">{error}</div>;
-    if (!product) return <div className="error">Product not found</div>;
+    if (loading) return (
+        <div className="product-detail-page">
+            <div className="loading-container">
+                <div className="loading-spinner"></div>
+                <p>Loading product details...</p>
+            </div>
+        </div>
+    );
+
+    if (error) return (
+        <div className="product-detail-page">
+            <div className="error-container">
+                <div className="error-icon">⚠️</div>
+                <h3>{error}</h3>
+                <p>Please check the product URL or try again later.</p>
+                <button 
+                    className="primary-cta" 
+                    onClick={() => window.history.back()}
+                >
+                    ← Go Back
+                </button>
+            </div>
+        </div>
+    );
+
+    if (!product) return (
+        <div className="product-detail-page">
+            <div className="error-container">
+                <div className="error-icon">❌</div>
+                <h3>Product Not Found</h3>
+                <p>The product you're looking for doesn't exist or has been removed.</p>
+                <button 
+                    className="primary-cta" 
+                    onClick={() => window.history.back()}
+                >
+                    ← Go Back
+                </button>
+            </div>
+        </div>
+    );
 
     return (
         <div className="product-detail-page">
@@ -60,7 +123,7 @@ const ProductDetail = () => {
             
             {/* Three Column Layout */}
             <div className='product-detail-layout'>
-                {/* LEFT COLUMN - Thumbnail Gallery (Fixed) */}
+                {/* LEFT COLUMN - Thumbnail Gallery (Desktop only) */}
                 <div className='thumbnail-sidebar'>
                     <div className="thumbnail-gallery">
                         {productImages.map((image, index) => (
@@ -81,8 +144,35 @@ const ProductDetail = () => {
                     </div>
                 </div>
 
-                {/* MIDDLE COLUMN - Main Image (Fixed) */}
+                {/* MIDDLE COLUMN - Main Image */}
                 <div className='main-image-column'>
+                    {/* Navigation Arrows (Visible on Tablet & Mobile) */}
+                    {productImages.length > 1 && (
+                        <>
+                            <div className="image-navigation">
+                                <button 
+                                    className="nav-arrow prev-arrow" 
+                                    onClick={prevImage} 
+                                    aria-label="Previous image"
+                                >
+                                    ‹
+                                </button>
+                                <button 
+                                    className="nav-arrow next-arrow" 
+                                    onClick={nextImage} 
+                                    aria-label="Next image"
+                                >
+                                    ›
+                                </button>
+                            </div>
+                            
+                            {/* Image Counter (Tablet & Mobile) */}
+                            <div className="image-counter">
+                                {selectedImage + 1} / {productImages.length}
+                            </div>
+                        </>
+                    )}
+
                     <div className="main-image-container">
                         <img 
                             src={productImages[selectedImage]} 
@@ -90,12 +180,20 @@ const ProductDetail = () => {
                             className="main-product-image"
                             onError={(e) => {
                                 e.target.src = '/default-image.jpg';
+                                console.error('Failed to load product image');
                             }}
                         />
+                        
+                        {/* Image counter for desktop (overlay) */}
+                        {productImages.length > 1 && (
+                            <div className="desktop-image-counter">
+                                Photo {selectedImage + 1} of {productImages.length}
+                            </div>
+                        )}
                     </div>
                 </div>
 
-                {/* RIGHT COLUMN - Product Details (Scrollable) */}
+                {/* RIGHT COLUMN - Product Details */}
                 <div className='details-sidebar'>
                     <div className="product-details-card">
                         <div className="product-info">
@@ -110,37 +208,80 @@ const ProductDetail = () => {
                                     <span>{product.category}</span>
                                 </div>
                                 <div className="detail-item">
-                                    <strong className="label">Meet-up:</strong> 
+                                    <strong className="label">Meet-up Location:</strong> 
                                     <span>{product.location}</span>
                                 </div>
                                 <div className="detail-item">
-                                    <strong className="label">Seller:</strong> 
-                                    <span>Verified UNILAG Student</span>
+                                    <strong className="label">Seller Status:</strong> 
+                                    <span className="verified-badge">✅ Verified UNILAG Student</span>
                                 </div>
+                                {product.createdAt && (
+                                    <div className="detail-item">
+                                        <strong className="label">Listed:</strong> 
+                                        <span>{new Date(product.createdAt?.toDate()).toLocaleDateString()}</span>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
                         {/* Description */}
                         <div className="description-section">
                             <h3>Description</h3>
-                            <p>{product.description}</p>
+                            <p className="description-text">{product.description}</p>
                         </div>
+
+                        {/* Stats (if available) */}
+                        {(product.views || product.saves) && (
+                            <div className="product-stats">
+                                <div className="stat-item">
+                                    <span className="stat-number">{product.views || 0}</span>
+                                    <span className="stat-label">Views</span>
+                                </div>
+                                <div className="stat-item">
+                                    <span className="stat-number">{product.saves || 0}</span>
+                                    <span className="stat-label">Saves</span>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Trust & Safety */}
                         <div className="trust-safety-section">
                             <div className="trust-hint">
-                                ✅ Verified UNILAG Student Seller
+                                <span className="trust-icon">✅</span>
+                                <div className="trust-content">
+                                    <strong>Verified UNILAG Student Seller</strong>
+                                    <p>This seller has been verified by our campus team</p>
+                                </div>
                             </div>
                             <div className="safety-tip">
-                                🛡️ Meet on campus. Stay safe.
+                                <span className="safety-icon">🛡️</span>
+                                <div className="safety-content">
+                                    <strong>Safety First</strong>
+                                    <p>Always meet in public campus locations and inspect items before payment</p>
+                                </div>
                             </div>
                         </div>
 
                         {/* Action Buttons */}
                         <div className="action-buttons">
-                            <button className="primary-cta">💬 Message Seller</button>
-                            <button className="secondary-cta">❤️ Save for Later</button>
-                            <button className='report-btn'>Report this listing</button>
+                            <button className="primary-cta">
+                                <span className="button-icon">💬</span>
+                                Message Seller
+                            </button>
+                            <button className="secondary-cta">
+                                <span className="button-icon">❤️</span>
+                                Save for Later
+                            </button>
+                            <div className="button-group">
+                                <button className="share-btn">
+                                    <span className="button-icon">📤</span>
+                                    Share
+                                </button>
+                                <button className='report-btn'>
+                                    <span className="button-icon">🚩</span>
+                                    Report
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

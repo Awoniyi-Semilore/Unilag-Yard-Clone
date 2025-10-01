@@ -1,0 +1,121 @@
+/* --- HERO SECTION WITH COMBINED GRADIENT & BLOBS --- */
+.plan-hero {
+  position: relative;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  background-color: #f4f7fa; /* Your light grey base */
+  padding: 2rem;
+}
+
+/* The Main Animated Gradient */
+.gradient-bg {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    radial-gradient(
+      circle at center,
+      rgba(46, 125, 50, 0.2) 0%,   /* Primary Green */
+      rgba(232, 245, 233, 0.15) 40%, /* Pale Green */
+      rgba(255, 255, 255, 0) 70%
+    );
+  animation: rotateGradient 20s ease-in-out infinite;
+  z-index: 1;
+}
+
+/* The Floating Blobs */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  animation: floatBlob 25s infinite alternate ease-in-out;
+  z-index: 2;
+}
+
+/* Individual Blob Styles */
+.blob-1 {
+  width: 400px;
+  height: 400px;
+  top: -150px;
+  left: -100px;
+  background: rgba(46, 125, 50, 0.1); /* Primary Green */
+  animation-delay: -5s;
+}
+
+.blob-2 {
+  width: 350px;
+  height: 350px;
+  bottom: -100px;
+  right: -50px;
+  background: rgba(232, 245, 233, 0.15); /* Pale Green */
+  animation-delay: -10s;
+}
+
+.blob-3 {
+  width: 300px;
+  height: 300px;
+  bottom: 50%;
+  left: 60%;
+  background: rgba(255, 255, 255, 0.2); /* White */
+  animation-delay: -15s;
+}
+
+/* Animations */
+@keyframes rotateGradient {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes floatBlob {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(50px, -80px) scale(1.1); }
+  66% { transform: translate(-30px, 40px) scale(0.9); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+/* Text Content */
+.hero-content {
+  position: relative;
+  z-index: 3; /* Above everything */
+  max-width: 800px;
+}
+
+.plan-hero h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 1.5rem;
+}
+
+.plan-hero p {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #4e5d6c;
+  line-height: 1.6;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .plan-hero h1 {
+    font-size: 2rem;
+  }
+  
+  .plan-hero p {
+    font-size: 1.1rem;
+  }
+  
+  .blob-1,
+  .blob-2,
+  .blob-3 {
+    transform: scale(0.7);
+  }
+}
