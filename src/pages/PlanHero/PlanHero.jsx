@@ -1,5 +1,5 @@
 import React from 'react';
-import '../PlanHero/PlanHero.CSS'; // We'll create this CSS file
+import '../PlanHero/PlanHero.css' // We'll create this CSS file
 import { Link } from 'react-router-dom';
 
 const PlanHero = () => {
