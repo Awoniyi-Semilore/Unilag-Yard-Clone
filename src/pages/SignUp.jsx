@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { AuthContext } from '../pages/AuthContext';
+import { AuthContext } from '../Hooks/useAuth';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../pages/firebase';
 import { motion } from 'framer-motion';
