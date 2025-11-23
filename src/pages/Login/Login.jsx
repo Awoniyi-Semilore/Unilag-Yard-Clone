@@ -131,7 +131,7 @@ function Login() {
                 <Mail size={20} className="input-icon" />
                 <input
                   type="email"
-                  placeholder="Enter your student email"
+                  placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -264,7 +264,7 @@ function Login() {
             transition={{ delay: 1.1 }}
           >
             <Shield size={16} />
-            <span>100% Secure • Verified Students Only</span>
+            <span>100% Secure • Every seller is verified as a current UNILAG student - your guarantee of campus-legitimate transactions</span>
           </motion.div>
         </motion.div>
       </motion.div>
