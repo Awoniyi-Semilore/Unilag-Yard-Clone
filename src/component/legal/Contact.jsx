@@ -190,7 +190,7 @@ ${formData.message}
 
   return (
     <Box minH="100vh" py={8} mt={8}>
-      <Container maxW="7xl">
+      <Container maxW="7xl" paddingTop="40px">
         {/* Main Header */}
         <MotionBox
           ref={mainRef}
