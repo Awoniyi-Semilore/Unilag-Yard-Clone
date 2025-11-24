@@ -1435,3 +1435,46 @@
         margin-top: -40px;
     }
 }
+
+/* Product Detail Dark Mode Support */
+.product-detail-page {
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+}
+
+.thumbnail-item {
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-light);
+}
+
+.thumbnail-item.active {
+  border-color: var(--accent-color);
+}
+
+.thumbnail-item:hover {
+  border-color: var(--accent-color);
+}
+
+.action-buttons .share-btn,
+.action-buttons .report-btn {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.action-buttons .share-btn:hover,
+.action-buttons .report-btn:hover {
+  background-color: var(--bg-hover);
+}
+
+.trust-hint,
+.safety-tip {
+  background-color: var(--bg-secondary);
+  border-left: 4px solid var(--accent-color);
+}
+
+.verification-dialogue,
+.pending-verification-dialogue {
+  background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+  border: 1px solid var(--border-color);
+}
