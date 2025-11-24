@@ -1,8 +1,17 @@
-// hooks/useAuth.jsx - YOUR SINGLE SOURCE OF TRUTH
+// hooks/useAuth.jsx - COMPLETE VERSION WITH ALL AUTH FUNCTIONS
 import { useState, useEffect, createContext, useContext } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
+import { 
+  onAuthStateChanged, 
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  GoogleAuthProvider,
+  signInWithPopup,
+  updateProfile,
+  sendPasswordResetEmail
+} from 'firebase/auth';
 import { auth } from '../firebase';
-import { getUserProfile } from '../firebase/auth';
+import { getUserProfile, createUserProfile } from '../firebase/auth';
 
 export const AuthContext = createContext();
 
@@ -19,6 +28,7 @@ export const AuthProvider = ({ children }) => {
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [authLoading, setAuthLoading] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -43,11 +53,13 @@ export const AuthProvider = ({ children }) => {
             setUserProfile(profileResult.data);
           } else {
             // If no profile exists, create a basic one
-            setUserProfile({
+            const basicProfile = {
               ...userData,
               verificationStatus: 'unverified',
-              role: 'user'
-            });
+              role: 'user',
+              createdAt: new Date().toISOString()
+            };
+            setUserProfile(basicProfile);
           }
         } else {
           setUser(null);
@@ -64,13 +76,165 @@ export const AuthProvider = ({ children }) => {
     return unsubscribe;
   }, []);
 
+  // Login with email and password
+  const login = async (email, password) => {
+    try {
+      setError(null);
+      setAuthLoading(true);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      
+      // Get user profile after login
+      const profileResult = await getUserProfile(userCredential.user.uid);
+      if (profileResult.success) {
+        setUserProfile(profileResult.data);
+      }
+      
+      return { success: true };
+    } catch (error) {
+      const errorMessage = getAuthErrorMessage(error.code);
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  // Sign up with email and password
+  const signup = async (email, password, displayName = "") => {
+    try {
+      setError(null);
+      setAuthLoading(true);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+      // Update profile with display name if provided
+      if (displayName) {
+        await updateProfile(userCredential.user, { displayName });
+      }
+
+      // Create user profile in Firestore
+      const userData = {
+        uid: userCredential.user.uid,
+        email: userCredential.user.email,
+        displayName: displayName || userCredential.user.email.split('@')[0],
+        photoURL: userCredential.user.photoURL || '',
+        verificationStatus: 'unverified',
+        role: 'user',
+        createdAt: new Date().toISOString()
+      };
+
+      await createUserProfile(userCredential.user.uid, userData);
+      setUserProfile(userData);
+
+      return { success: true };
+    } catch (error) {
+      const errorMessage = getAuthErrorMessage(error.code);
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  // Login with Google
+  const loginWithGoogle = async () => {
+    try {
+      setError(null);
+      setAuthLoading(true);
+      const provider = new GoogleAuthProvider();
+      const userCredential = await signInWithPopup(auth, provider);
+      
+      // Check if user profile exists, if not create one
+      const profileResult = await getUserProfile(userCredential.user.uid);
+      if (!profileResult.success) {
+        const userData = {
+          uid: userCredential.user.uid,
+          email: userCredential.user.email,
+          displayName: userCredential.user.displayName,
+          photoURL: userCredential.user.photoURL || '',
+          verificationStatus: 'unverified',
+          role: 'user',
+          createdAt: new Date().toISOString()
+        };
+        await createUserProfile(userCredential.user.uid, userData);
+        setUserProfile(userData);
+      } else {
+        setUserProfile(profileResult.data);
+      }
+
+      return { success: true };
+    } catch (error) {
+      const errorMessage = getAuthErrorMessage(error.code);
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  // Logout
+  const logout = async () => {
+    try {
+      setError(null);
+      await signOut(auth);
+      return { success: true };
+    } catch (error) {
+      const errorMessage = getAuthErrorMessage(error.code);
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  };
+
+  // Reset password
+  const resetPassword = async (email) => {
+    try {
+      setError(null);
+      setAuthLoading(true);
+      await sendPasswordResetEmail(auth, email);
+      return { success: true };
+    } catch (error) {
+      const errorMessage = getAuthErrorMessage(error.code);
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  // Clear error
+  const clearError = () => setError(null);
+
+  // Helper function for user-friendly error messages
+  const getAuthErrorMessage = (errorCode) => {
+    const errorMessages = {
+      'auth/invalid-email': 'Invalid email address',
+      'auth/user-disabled': 'This account has been disabled',
+      'auth/user-not-found': 'No account found with this email',
+      'auth/wrong-password': 'Incorrect password',
+      'auth/email-already-in-use': 'An account with this email already exists',
+      'auth/weak-password': 'Password should be at least 6 characters',
+      'auth/network-request-failed': 'Network error. Please check your connection',
+      'auth/too-many-requests': 'Too many attempts. Please try again later',
+      'auth/popup-closed-by-user': 'Sign in was cancelled',
+      'auth/operation-not-allowed': 'This sign-in method is not enabled',
+      'auth/invalid-credential': 'Invalid login credentials',
+    };
+
+    return errorMessages[errorCode] || 'An unexpected error occurred';
+  };
+
   const value = {
     user,
     userProfile,
     loading,
     error,
+    authLoading,
     isLoggedIn: !!user,
-    clearError: () => setError(null)
+    login,
+    signup,
+    logout,
+    loginWithGoogle,
+    resetPassword,
+    clearError,
   };
 
   return (
