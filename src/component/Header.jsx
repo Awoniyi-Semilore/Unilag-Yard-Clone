@@ -38,33 +38,7 @@ const Header = ({ user = null, logout = () => {} }) => {
     };
   }, []);
 
-  // Dark mode functionality
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('unilag-yard-theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    const initialTheme = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
-    setIsDarkMode(initialTheme);
-    applyTheme(initialTheme);
-  }, []);
-
-  const applyTheme = (dark) => {
-    const theme = dark ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('unilag-yard-theme', theme);
-  };
-
-  const toggleDarkMode = () => {
-    const newTheme = !isDarkMode;
-    setIsDarkMode(newTheme);
-    applyTheme(newTheme);
-    
-    // Haptic feedback on mobile
-    if (navigator.vibrate) {
-      navigator.vibrate(50);
-    }
-  };
-
+  
   const handleIconClick = (index, id, path) => {
     if (activeIcon === index) {
       setActiveIcon(null);
@@ -214,26 +188,7 @@ const Header = ({ user = null, logout = () => {} }) => {
       </div>
 
       <div className="nav-icons">
-        {/* Dark Mode Toggle */}
-        <motion.div 
-          className="icon-container theme-toggle-container"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <div 
-            className="icon-clickable theme-toggle-btn"
-            onClick={toggleDarkMode}
-            onMouseEnter={() => handleHovered('theme')}
-            onMouseLeave={handleNotHovered}
-            aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-          >
-            {isDarkMode ? (
-              <Sun size={24} className="icon-hover theme-icon" />
-            ) : (
-              <Moon size={24} className="icon-hover theme-icon" />
-            )}
-          </div>
-          <AnimatePresence>
+        
             {(isHovered === 'theme') && (
               <motion.div 
                 className="icon-label"
