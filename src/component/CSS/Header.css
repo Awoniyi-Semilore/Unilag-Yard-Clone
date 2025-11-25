@@ -308,7 +308,7 @@
   .burger-menu {
     display: block;
   }
-  
+
   .search-section,
   .auth-section {
     display: none; /* Hide regular search and auth on mobile */
@@ -589,5 +589,3 @@
 .product-btn, .product-btn1 {
   cursor: pointer;
 }
-
-
