@@ -4,7 +4,8 @@ import { ChakraProvider } from '@chakra-ui/react';
 import theme from "./styles/theme";
 import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./App";
-import { AuthProvider } from "./Hooks/useAuth.jsx"; // Import from hooks folder
+import { AuthProvider } from "./Hooks/useAuth.jsx";
+import { ThemeProvider } from "./contexts/ThemeContext"; // Import ThemeProvider
 import ErrorBoundary from "./component/ErrorBoundary";
 import "./App.css"; 
 
@@ -15,9 +16,11 @@ root.render(
     <ErrorBoundary>
       <ChakraProvider theme={theme}>
         <BrowserRouter>
-          <AuthProvider> {/* This should match your actual AuthProvider export */}
-            <AppRoutes />
-          </AuthProvider>
+          <ThemeProvider> {/* Add ThemeProvider here */}
+            <AuthProvider>
+              <AppRoutes />
+            </AuthProvider>
+          </ThemeProvider>
         </BrowserRouter>
       </ChakraProvider>
     </ErrorBoundary>
