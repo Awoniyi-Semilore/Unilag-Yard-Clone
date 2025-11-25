@@ -5,7 +5,7 @@ import theme from "./styles/theme";
 import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./App";
 import { AuthProvider } from "./Hooks/useAuth.jsx";
-import { ThemeProvider } from "./contexts/ThemeContext"; // Import ThemeProvider
+import { ThemeProvider } from ""; // Import ThemeProvider
 import ErrorBoundary from "./component/ErrorBoundary";
 import "./App.css"; 
 
